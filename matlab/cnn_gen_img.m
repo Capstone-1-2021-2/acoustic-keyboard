@@ -28,20 +28,39 @@ for i = 1:length(filteredS)
         i = i + (50000 * length(filteredS)) / length(filteredX);
         
         % Extract spectrogram from figure
+%         t = tiledlayout(1,1,'Padding','tight');
+%         t.Units = 'pixels';
+%         t.OuterPosition = [0 0 235 145];
+        
         fh = figure('Menu','none','ToolBar','none');
         ah = axes('Units','Normalize','Position',[0 0 1 1]);
         
+%         fh.Units = 'pixels';
+%         fh.Resize = 'off';
+%         fh.Position = [0 0 111 68];   % trial and error
+        
+%         nexttile;
         spectrogram(peakedX, 1024, 512, 1024, fs, 'yaxis');
         
         axis off
         colorbar("hide")
         box off
         
-        d = 'spectrogram';  % make this folder before execution
+        d = sprintf('spectrogram/%c', alphabet);
+        if ~exist(d, 'dir') % make this folder before execution
+            mkdir(d)
+        end
         filename = sprintf('%c%d.jpg', alphabet, cnt+1);
+        
         exportgraphics(gcf, fullfile(d, filename));
         
+        % Resize image
+        img = imread(fullfile(d, filename));
+        img = imresize(img, [145 235]);
+        imwrite(img, fullfile(d, filename));
+        
         cnt = cnt + 1;
+        break
     end
 end
 
